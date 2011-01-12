@@ -15,7 +15,14 @@ import scala.xml._
  * A complexe widget component, that may both be called
  * in AJAX or by direct HTTP rendering.
  * 
- *
+ * I wrote two versions of the same trivial widget (display an HTML text and a JS Alert);
+ * - the first version use a <script> tag ;
+ * - the second version use a (NodeSeq,JsCmd) return type ;
+ * - both version are called directly in the index page, and thanks to ajax buttons.
+ * 
+ * What is expected:
+ * - the first widget, when called by the ajax button, does not display the alert.
+ * - the second does display the alert
  */
 class MyWidget extends DispatchSnippet {
 
