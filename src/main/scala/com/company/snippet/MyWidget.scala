@@ -10,6 +10,8 @@ import JsCmds._
 
 import scala.xml._
 
+import com.company.lib.ExtractJs.execSetHtml
+
 /**
  * 
  * A complexe widget component, that may both be called
@@ -33,6 +35,7 @@ class MyWidget extends DispatchSnippet {
       val (xml,js) = displayWidget2 
       xml ++ Script(js)
     }
+    case "displayWidget3" => { _ => displayWidget3 }
     case "ajaxButtons" => { _ => ajaxButtons }
   }
     
@@ -67,6 +70,21 @@ class MyWidget extends DispatchSnippet {
     }
     
     /**
+     * The widget mixes HTML tag and JS script.
+     * It can work with like workaround 2 with 
+     * ExtractJs.execSetHtml
+     */
+    def displayWidget3() : NodeSeq = {
+      <div>
+        <p>I'm displayWidget3 and my JS works in AJAX</p>
+        {
+          Script(Alert("I'm alert displayWidget3"))
+        }
+      </div>
+
+    }   
+    
+    /**
      * A zone with ajax call to the two widgets
      */
     def ajaxButtons() : NodeSeq = {
@@ -76,7 +94,10 @@ class MyWidget extends DispatchSnippet {
       def ajaxDisplayWidget2 : JsCmd = {
         val (xml, js) = displayWidget2
         SetHtml("ajaxW2", xml) & js
-      }
+      } 
+      //here, I don't know that displayWidget3 need some JS initialization,
+      //but we don't care as JS <script> tag will be filtered and executed
+      def ajaxDisplayWidget3 : JsCmd = execSetHtml("ajaxW3", displayWidget3) 
        
       <div>
         <p>{SHtml.ajaxButton(Text("Widget 1"), ajaxDisplayWidget1 _)}</p>
@@ -84,6 +105,9 @@ class MyWidget extends DispatchSnippet {
         
         <p>{SHtml.ajaxButton(Text("Widget 2"), ajaxDisplayWidget2 _)}</p>
         <div id="ajaxW2">updated by widget 2 - alert show</div>
+        
+        <p>{SHtml.ajaxButton(Text("Widget 3"), ajaxDisplayWidget3 _)}</p>
+        <div id="ajaxW3">updated by widget 3 - alert show</div>
       </div>
     }
 }
